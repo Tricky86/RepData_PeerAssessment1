@@ -112,14 +112,20 @@ $(document).ready(function () {
 </div>
 
 
-<p>Load the data and remove NAs</p>
+<p>Load the data and remove NAs, Date is converted and stored as proper date</p>
 <pre class="r"><code>data&lt;-read.csv(&quot;activity.csv&quot;)
-data2&lt;-na.omit(data)</code></pre>
-<p>Date is converted and stored as proper date</p>
-<pre class="r"><code>data2$date&lt;-as.Date(data2$date,&quot;%Y-%m-%d&quot;)</code></pre>
-<p>Loading dplyr package</p>
+data2&lt;-na.omit(data)
+data2$date&lt;-as.Date(data2$date,&quot;%Y-%m-%d&quot;)</code></pre>
+<p>Loading dplyr package, Group by date and summarize the sum of steps</p>
 <pre class="r"><code>library(dplyr)</code></pre>
-<p>Group by date and summarize the sum of steps</p>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>stepsPerDay&lt;-summarize(group_by(data2,date),sum(steps))</code></pre>
 <p>Make a histogram of steps per day</p>
 <pre class="r"><code>hist(stepsPerDay$`sum(steps)`,xlab=&quot;Total number of steps per day&quot;,ylab=&quot;Count&quot;,
@@ -164,16 +170,15 @@ hist(stepsPerDayFilled$`sum(steps)`,xlab=&quot;Total number of steps per day&quo
 <pre class="r"><code>meanStepsFilled&lt;-mean(stepsPerDayFilled$`sum(steps)`)
 medianStepsFilled&lt;-median(stepsPerDayFilled$`sum(steps)`)</code></pre>
 <p>The mean total number of steps taken per day is 10766.1886792453 and the median is 10766.1886792453. The mean total number of steps is the same after replacing the missing values with the averge for each interval.The median has increased and now it is equal to the mean. As a result, imputing mising data only affects the median.</p>
-<p>Create a variable with weekdays</p>
-<pre class="r"><code>filledData$day&lt;-weekdays(filledData$date)</code></pre>
-<p>First define all days as weekdays</p>
-<pre class="r"><code>filledData$dayClass &lt;-&quot;weekday&quot;</code></pre>
-<p>Then define days that are Saturday or Sunday as weekends</p>
-<pre class="r"><code>filledData$dayClass[filledData$day %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;)]&lt;-&quot;weekend&quot;</code></pre>
+<p>Create a variable with weekdays, define all days as weekdays, then define days that are Saturday or Sunday as weekends</p>
+<pre class="r"><code>filledData$day&lt;-weekdays(filledData$date)
+filledData$dayClass &lt;-&quot;weekday&quot;
+filledData$dayClass[filledData$day %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;)]&lt;-&quot;weekend&quot;</code></pre>
 <p>Group the data by the 5-min interval and calculate the average number of steps for each interval (and type of day)</p>
 <pre class="r"><code>stepsPerDay&lt;-summarize(group_by(filledData,dayClass,interval),mean(steps))</code></pre>
 <p>loading the ggplot2 package</p>
 <pre class="r"><code>library(ggplot2)</code></pre>
+<pre><code>## Warning: package 'ggplot2' was built under R version 3.2.3</code></pre>
 <p>We use qplot to demonstrate the differences between weekdays and weekends</p>
 <pre class="r"><code>qplot(interval,`mean(steps)`,data=stepsPerDay,
       geom=&quot;line&quot;,xlab=&quot;5-min interval&quot;,ylab=&quot;Average number of steps&quot;,

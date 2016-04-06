@@ -3,28 +3,18 @@ title: "PA1_template.Rmd"
 output: html_document
 ---
 
-Load the data and remove NAs
+Load the data and remove NAs, Date is converted and stored as proper date
 
 ```{r,echo=TRUE}
 data<-read.csv("activity.csv")
 data2<-na.omit(data)
-```
-
-Date is converted and stored as proper date
-
-```{r,echo=TRUE}
 data2$date<-as.Date(data2$date,"%Y-%m-%d")
 ```
 
-Loading dplyr package
+Loading dplyr package, Group by date and summarize the sum of steps
 
 ```{r,echo=TRUE}
 library(dplyr)
-```
-
-Group by date and summarize the sum of steps
-
-```{r, echo=TRUE}
 stepsPerDay<-summarize(group_by(data2,date),sum(steps))
 ```
 
@@ -34,7 +24,6 @@ Make a histogram of steps per day
 hist(stepsPerDay$`sum(steps)`,xlab="Total number of steps per day",ylab="Count",
      main="Histogram of total number of steps per day",col=2)
 ```
-
 
 Calculate the mean and median for total number of steps
 
@@ -115,26 +104,15 @@ medianStepsFilled<-median(stepsPerDayFilled$`sum(steps)`)
 
 The mean total number of steps taken per day is 10766.1886792453 and the median is 10766.1886792453. The mean total number of steps is the same after replacing the missing values with the averge for each interval.The median has increased and now it is equal to the mean. As a result, imputing mising data only affects the median.
 
-Create a variable with weekdays
+Create a variable with weekdays, define all days as weekdays, then define days that are Saturday or Sunday as weekends 
 
 ```{r, echo=TRUE}
 
 filledData$day<-weekdays(filledData$date)
-```
-
-First define all days as weekdays 
-
-```{r, echo=TRUE}
-
 filledData$dayClass <-"weekday"
-```
-
-Then define days that are Saturday or Sunday as weekends
-
-```{r, echo=TRUE}
-
 filledData$dayClass[filledData$day %in% c("Saturday","Sunday")]<-"weekend"
 ```
+
 
 Group the data by the 5-min interval and calculate the average number of steps for each interval (and type of day)
 
