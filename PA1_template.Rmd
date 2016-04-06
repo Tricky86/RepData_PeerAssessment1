@@ -3,7 +3,7 @@ title: "PA1_template.Rmd"
 output: 
   html_document: 
     fig_height: 3
-    fig_width: 5
+    fig_width: 4
 ---
 
 Load the data and remove NAs, Date is converted and stored as proper date
